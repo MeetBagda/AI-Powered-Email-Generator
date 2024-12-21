@@ -20,12 +20,23 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 interface FormValues {
   purpose: string;
   subjectLine: string;
   recipients: string;
   senders: string;
   maxLength: number;
+  tone?: string;
 }
 
 const EmailForm = () => {
@@ -60,7 +71,8 @@ const EmailForm = () => {
           subjectLine: data.subjectLine,
           recipients: data.recipients,
           senders: data.senders,
-          maxLength: data.maxLength, // Send as a number
+          maxLength: data.maxLength,
+          tone: data.tone,
         }),
       });
 
@@ -118,7 +130,7 @@ const EmailForm = () => {
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="email-form w-full h-auto flex flex-col gap-8"
+              className="email-form w-full h-auto flex flex-col gap-5"
             >
               <FormItem className="w-full">
                 <FormLabel htmlFor="purpose">Purpose:</FormLabel>
@@ -191,6 +203,32 @@ const EmailForm = () => {
                   />
                 </FormControl>
               </FormItem>
+              <FormItem>
+                <FormControl>
+                  <Select>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select a tone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Tone</SelectLabel>
+                        <SelectItem value="friendly">Friendly</SelectItem>
+                        <SelectItem value="funny">Funny</SelectItem>
+                        <SelectItem value="casual">Casual</SelectItem>
+                        <SelectItem value="excited">Excited</SelectItem>
+                        <SelectItem value="professional">
+                          Professional
+                        </SelectItem>
+                        <SelectItem value="urgent">Urgent</SelectItem>
+                        <SelectItem value="bold">Bold</SelectItem>
+                        <SelectItem value="dramatic">Dramatic</SelectItem>
+                        <SelectItem value="masculine">Masculine</SelectItem>
+                        <SelectItem value="luxury">Luxury</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
               <Button type="submit" disabled={loading}>
                 {loading ? "Generating..." : "Generate Email"}
               </Button>
@@ -203,8 +241,10 @@ const EmailForm = () => {
         <div style={{ width: "100%" }}>
           {generatedEmail && (
             <div className="email-output">
-              
-              <pre className="text-slate-700" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <pre
+                className="text-slate-700"
+                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              >
                 {generatedEmail}
               </pre>
               <div className="mt-5">

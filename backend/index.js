@@ -36,8 +36,9 @@ app.post("/generate-email", async (req, res) => {
             recipients: createPayLoad.recipients,
             senders: createPayLoad.senders,
             maxLength: createPayLoad.maxLength,
+            tone: createPayLoad.tone || "professional",
             generatedEmail: generatedEmail || "",
-            createdAt: new Date()
+            createdAt: new Date(),
           });
 
           console.log(createPayLoad);

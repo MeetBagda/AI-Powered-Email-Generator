@@ -18,6 +18,7 @@ def generate_email():
     recipients = data.get('recipients')
     senders = data.get('senders')
     max_length = data.get('maxLength')
+    tone = data.get('tone')
 
 
     if not all([purpose, subject_line, recipients, senders, max_length]):
@@ -32,6 +33,7 @@ def generate_email():
         Subject Line: {subject_line}
         Recipients: {recipients}
         Senders: {senders}
+        Tone: {tone}
 
         Ensure the generated email has a maximum of {max_length} words.
         Email:

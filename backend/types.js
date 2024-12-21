@@ -11,6 +11,7 @@ const generateEmailSchema = z.object({
     .number()
     .min(50, "Max length cannot be less than 50")
     .max(800, "Max Length must be smaller than 800"),
+  
 });
 
 const getAllEmailSchema = z.object({});

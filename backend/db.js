@@ -24,6 +24,22 @@ const emailSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  tone: {
+    type: String,
+    enum: [
+      "friendly",
+      "funny",
+      "casual",
+      "excited",
+      "professional",
+      "witty",
+      "luxury",
+      "bold",
+      "dramatic",
+      "musculine",
+      "urgent",
+    ],
+  },
   generatedEmail: {
     type: String,
     required: false,
@@ -33,6 +49,7 @@ const emailSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  
 });
 
 const Email = mongoose.model("Email", emailSchema);
