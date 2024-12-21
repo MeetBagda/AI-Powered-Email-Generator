@@ -204,7 +204,7 @@ const EmailForm = () => {
           {generatedEmail && (
             <div className="email-output">
               
-              <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <pre className="text-slate-700" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                 {generatedEmail}
               </pre>
               <div className="mt-5">
