@@ -72,18 +72,16 @@ Before you begin, ensure you have the following installed:
           python -m venv venv
          ```
      3. Activate the virtual environment.
-        ```bash
-          venv\Scripts\Activate #For windows
         ```
-          ```bash
-         source venv/bin/activate # for mac/linux
+          venv\Scripts\Activate #For windows
+          source venv/bin/activate # for mac/linux
          ```
      4.  Install requirements:
-       ```bash
+       ```
         pip install -r requirements.txt
        ```
      5. Run the app by
-       ```bash
+       ```
         flask run
        ```
 
