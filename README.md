@@ -7,13 +7,13 @@
 
 This project is an AI-powered email generator that leverages the power of Google's Gemini models to create personalized emails based on user prompts.
 
-## Features
+## Features 🚀
 
 *   **Prompt-Based Generation:** Generate emails by providing a text prompt describing the desired content.
 *   **Customizable Parameters:** Control the length and creativity level of the generated emails.
 *   **User-Friendly Interface:** A simple UI to interact with the email generation model.
 
-## Technologies Used
+## Tech Stack 🔨
 
 *   **Frontend:** React.js with TypeScript
 *   **Backend API:** Node.js with Express.js
