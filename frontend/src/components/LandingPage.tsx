@@ -3,7 +3,8 @@ import { Button } from "./ui/button";
 function LandingPage() {
   return (
     <div className=" w-full h-screen ">
-      <div className=" w-[70%] m-auto h-screen flex flex-col p-5">
+      <div className=" w-[70%] m-auto h-screen flex flex-col pb-5">
+        {/* header */}
         <div className="w-full h-20  flex flex-row justify-between items-center">
           {/* logo */}
           <div className="p-3">
@@ -35,12 +36,25 @@ function LandingPage() {
           </div>
           {/* buttons */}
           <div className="flex flex-row gap-3 p-3">
-            <Button variant={'ghost'} className="border border-slate-400">Log In</Button>
+            <Button variant={"ghost"} className="border border-slate-400">
+              Log In
+            </Button>
             <Button>Sign Up</Button>
           </div>
         </div>
-        <div className="flex-1 bg-gradient-to-t from-orange-100 to-white-100 rounded-xl">
-          <div className="p-11">content</div>
+        {/* content */}
+        <div className="flex-1 bg-gradient-to-t from-[#FAF0E6] to-[#FAFAFA] rounded-xl flex flex-col gap-11 justify-center items-center ">
+          <div className="text-center font-display text-4xl font-medium text-neutral-900 animate-fadeinup">
+            <span>Generate Emails With</span>
+            <br /> <span>SuperPowers</span>
+          </div>
+          <div className="text-2xl text-gray-500 animate-fadeinup">
+            <p>Conquer Your Inbox with AI-Powered Email Generation</p>
+          </div>
+          <div className="flex flex-row gap-3 animate-fadeinup">
+            <Button>Start for free</Button>
+            <Button className="border border-slate-400" variant={'ghost'}>Get Demo</Button>
+          </div>
         </div>
       </div>
     </div>
