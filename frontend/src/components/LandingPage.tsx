@@ -1,6 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 function LandingPage() {
+
+  const navigate = useNavigate(); 
+
+  const handleStartForFreeClick = () => {
+    navigate("/email");
+  };
   return (
     <div className=" w-full h-screen ">
       <div className=" w-[70%] m-auto h-screen flex flex-col pb-5">
@@ -52,7 +59,7 @@ function LandingPage() {
             <p>Conquer Your Inbox with AI-Powered Email Generation</p>
           </div>
           <div className="flex flex-row gap-3 animate-fadeinup">
-            <Button>Start for free</Button>
+            <Button onClick={handleStartForFreeClick} >Start for free</Button>
             <Button className="border border-slate-400" variant={'ghost'}>Get Demo</Button>
           </div>
         </div>
