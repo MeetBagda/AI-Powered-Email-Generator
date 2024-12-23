@@ -117,7 +117,7 @@ const EmailForm = () => {
 
   return (
     <>
-      <div className="" style={{ width: "40%" }}>
+      <div className="pl-5" style={{ width: "40%" }}>
         <div
           className="email-container w-full h-full flex flex-row justify-center items-center"
           style={{
