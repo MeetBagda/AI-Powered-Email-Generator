@@ -37,19 +37,16 @@ Before you begin, ensure you have the following installed:
     cd AI-Powered-Email-Generator
     ```
 
-2.  **Navigate to the Backend Directory:**
+2.  **Navigate to the backend Directory & Install Backend Dependencies:**
 
     ```bash
     cd backend
     ```
-
-3.  **Install Backend Dependencies:**
-
     ```bash
     npm install
     ```
-
-4.  **Set Up Environment Variables (Backend):**
+    
+3.  **Set Up Environment Variables (Backend):**
     *   Create a `.env` file in the `backend` directory.
     *   Add the following environment variable:
 
@@ -61,30 +58,37 @@ Before you begin, ensure you have the following installed:
          ```
             MODEL_NAME=gemini-pro
          ```
-5.  **Start the Backend Server:**
+4.  **Start the Backend Server:**
 
     ```bash
-    npm start
+    node index.js
     ```
-
     The server should start running on port `5000` (or the port configured in your backend code).
-
-6.  **Navigate to the Frontend Directory:**
+5. **Download venv.zip file and after exctract, paste it into the python folder, then navigate to the python Directory:**
 
     ```bash
-    cd ../client
+    cd python
+    ```
+    ```bash
+    venv\Scripts\Activate
+    ```
+    ```bash
+    flask run
     ```
 
-7.  **Install Frontend Dependencies:**
+6.  **Navigate to the frontend Directory & Install Frontend Dependencies:**
 
+    ```bash
+    cd frontend
+    ```
     ```bash
     npm install
     ```
 
-8.  **Start the Frontend Development Server:**
+7.  **Start the Frontend Development Server:**
 
     ```bash
-    npm start
+    npm run dev
     ```
 
     The React app should open in your browser (usually at `http://localhost:3000`).
