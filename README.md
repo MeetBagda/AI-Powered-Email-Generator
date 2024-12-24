@@ -64,17 +64,26 @@ Before you begin, ensure you have the following installed:
     node index.js
     ```
     The server should start running on port `5000` (or the port configured in your backend code).
-5. **Download venv.zip file and after exctract, paste it into the python folder, then navigate to the python Directory:**
+5. **To run the python server and ai model follow this commands:**
 
-    ```bash
-    cd python
-    ```
-    ```bash
-    venv\Scripts\Activate
-    ```
-    ```bash
-    flask run
-    ```
+     1. Navigate to python directory by `cd python`.
+     2. Create a new virtual environment.
+        ```
+          python -m venv venv
+         ```
+     3. Activate the virtual environment.
+        ```
+          venv\Scripts\Activate #For windows
+          source venv/bin/activate # for mac/linux
+         ```
+     4.  Install requirements:
+       ```
+        pip install -r requirements.txt
+       ```
+     5. Run the app by
+       ```
+        flask run
+       ```
 
 6.  **Navigate to the frontend Directory & Install Frontend Dependencies:**
 
