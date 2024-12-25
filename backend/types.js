@@ -22,5 +22,4 @@ const userSchema = z.object({
 
 const getAllEmailSchema = z.object({});
 const getAllUserSchema = z.object({});
-
 module.exports = { generateEmailSchema, getAllEmailSchema, userSchema, getAllUserSchema };

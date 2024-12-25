@@ -12,9 +12,7 @@ function App() {
         <Route
           path="/"
           element={
-            
               <LandingPage />
-            
           }
         />
          <Route

@@ -77,7 +77,7 @@ app.post("/user", async (req, res) => {
   }
 
   try {
-    await User.create({
+    const user = await User.create({
       email: createPayLoad.email,
       username: createPayLoad.username,
       password: createPayLoad.password,
