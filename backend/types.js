@@ -14,12 +14,13 @@ const generateEmailSchema = z.object({
   
 });
 
-const userSchema = z.object({
-  email: z.string().email(),
-  username: z.string().min(3, "Username must be at least 3 character"),
-  password: z.string().min(4, "Password must be at least 4 character"),
-});
+// const userSchema = z.object({
+//   email: z.string().email(),
+//   username: z.string().min(3, "Username must be at least 3 character"),
+//   password: z.string().min(4, "Password must be at least 4 character"),
+// });
 
 const getAllEmailSchema = z.object({});
-const getAllUserSchema = z.object({});
-module.exports = { generateEmailSchema, getAllEmailSchema, userSchema, getAllUserSchema };
+// const getAllUserSchema = z.object({});
+module.exports = { generateEmailSchema, getAllEmailSchema};
+// module.exports = { generateEmailSchema, getAllEmailSchema, userSchema, getAllUserSchema };
