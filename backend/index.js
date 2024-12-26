@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { generateEmailSchema, userSchema } = require("./types");
-const Email = require("./db");
+const { generateEmailSchema, userSchema, getAllUserSchema } = require("./types");
+const {Email, User} = require("./db");
 const axios = require("axios");
-// const User = require("./db");
 
 app.use(express.json());
 app.use(cors());
@@ -65,49 +64,53 @@ app.get("/emails", async (req, res) => {
   }
 });
 
-// app.post("/user", async (req, res) => {
-//   const createPayLoad = req.body;
-//   const parsedPayLoad = userSchema.safeParse(createPayLoad);
+app.post("/user", async (req, res) => {
+  const createPayLoad = req.body;
+  const parsedPayLoad = userSchema.safeParse(createPayLoad);
 
-//   if (!parsedPayLoad.success) {
-//     return res.status(411).json({
-//       msg: "You sent the wrong inputs",
-//       errors: parsedPayLoad.error.issues,
-//     });
-//   }
+  if (!parsedPayLoad.success) {
+    return res.status(411).json({
+      msg: "You sent the wrong inputs",
+      errors: parsedPayLoad.error.issues,
+    });
+  }
 
-//   try {
-//     const user = await User.create({
-//       email: createPayLoad.email,
-//       username: createPayLoad.username,
-//       password: createPayLoad.password,
-//     });
+  try {
+    const user = await User.create({
+      email: createPayLoad.email,
+      username: createPayLoad.username,
+      password: createPayLoad.password,
+    });
 
-//     console.log(createPayLoad);
+    console.log(createPayLoad);
 
-//     res.json({
-//       msg: "User created",
-//       user: user,
-//     });
-//   } catch (error) {
-//     console.error("Error during email generation:", error);
-//     res
-//       .status(500)
-//       .json({ msg: "Error generating or saving email", error: error.message });
-//   }
-// });
+    res.json({
+      msg: "User created",
+      user: user,
+    });
+  } catch (error) {
+    console.error("Error during User creation:", error);
+     if (error.code === 11000) { 
+      const key = Object.keys(error.keyPattern)[0];
+            return res.status(400).json({ msg: `${key} already registered` });
+     }
+    res
+      .status(500)
+      .json({ msg: "Error generating or saving user", error: error.message });
+  }
+});
 
-// app.get("/users", async (req, res) => {
-//   try {
-//     const users = await User.find();
-//     res.json(users);
-//   } catch (error) {
-//     console.error("Error fetching emails:", error);
-//     res
-//       .status(500)
-//       .json({ msg: "Error fetching emails", error: error.message });
-//   }
-// });
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res
+      .status(500)
+      .json({ msg: "Error fetching users", error: error.message });
+  }
+});
 
 app.listen(3000, () => {
   console.log("Server running successfully");

@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 require('dotenv').config();
-mongoose.connect(
-  process.env.MONGODB_URI
-);
+
+mongoose.connect(process.env.MONGODB_URI);
+
 const emailSchema = new mongoose.Schema({
   purpose: {
     type: String,
@@ -49,26 +49,27 @@ const emailSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  
 });
 
-// const userSchema = new mongoose.Schema({
-//   email: {
-//     type: String,
-//     required: true,
-//   },
-//   username: {
-//     type: String,
-//     required: true,
-//   },
-//   password: {
-//     type: String,
-//     required: true,
-//   },
-// });
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true, // Add unique constraint
+  },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+});
 
 const Email = mongoose.model("Email", emailSchema);
-// const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-module.exports = Email;
-// module.exports = User;
+
+module.exports = {Email, User};
