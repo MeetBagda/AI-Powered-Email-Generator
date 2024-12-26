@@ -63,7 +63,7 @@ export default function LoginForm() {
                return; // early return
             }else{
                reset()
-               alert("user created")
+               navigate("/email");
             }
         } catch (err: any) {
             console.error(err);
