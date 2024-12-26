@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = () => {
   const methods = useForm({
     mode: "onBlur",
   });
-  const { register, handleSubmit, reset, formState: { errors } } = methods;
+  const { register, handleSubmit, reset } = methods;
 
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
   const [loading, setLoading] = useState(false);
