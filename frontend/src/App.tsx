@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
+import LoginForm from "./components/LoginForm";
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
         <Route
           path="/login"
           element={
-              <Login />
+              <LoginForm />
           }
         />
       </Routes>
