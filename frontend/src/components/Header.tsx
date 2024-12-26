@@ -93,7 +93,7 @@ function Header() {
                     History
                 </Button>
             </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[700px]">
                   <DialogHeader>
                     <DialogTitle>Previous Emails</DialogTitle>
                     <DialogDescription>
