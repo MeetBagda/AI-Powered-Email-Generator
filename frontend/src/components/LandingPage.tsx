@@ -43,10 +43,10 @@ function LandingPage() {
           </div>
           {/* buttons */}
           <div className="flex flex-row gap-3 p-3">
-            <Button variant={"ghost"} className="border border-slate-400">
+            <Button onClick={()=>{navigate('/login')}} variant={"ghost"} className="border border-slate-400">
               Log In
             </Button>
-            <Button>Sign Up</Button>
+            <Button onClick={()=>{navigate('/login')}}>Sign Up</Button>
           </div>
         </div>
         {/* content */}

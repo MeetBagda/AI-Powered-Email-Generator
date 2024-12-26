@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
+import { useAuth } from "@/context/authContext";
 
 // Menu items.
 const items = [
@@ -43,6 +44,9 @@ const items = [
 ]
 
 export function AppSidebar() {
+  const { user } = useAuth();
+  console.log(user)
+  console.log("hello")
   return (
     <Sidebar>
       <SidebarContent >
@@ -70,7 +74,7 @@ export function AppSidebar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton size={"lg"}>
-                    <User2 /> Username
+                    <User2 /> {user?.username || 'Username' }
                     <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>

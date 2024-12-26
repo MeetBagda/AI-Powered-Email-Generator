@@ -100,6 +100,27 @@ app.post("/user", async (req, res) => {
   }
 });
 
+app.post("/signin", async (req, res) => {
+  const {email, password} = req.body;
+   try {
+     const user = await User.findOne({ email });
+     if (!user) {
+       return res.status(404).json({ msg: "User not found" });
+       }
+
+      if(user.password !== password){
+         return res.status(401).json({msg: "Incorrect Password"})
+        }
+
+    res.status(200).json({ msg: "Logged in", user });
+ } catch (error) {
+     console.error("Error during User sign in:", error);
+      res
+         .status(500)
+         .json({ msg: "Error signing in", error: error.message });
+ }
+});
+
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();

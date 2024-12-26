@@ -4,6 +4,7 @@ import Layout from "./components/layout";
 import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Login from "./components/Login";
 
 function App() {
   return (
@@ -28,7 +29,12 @@ function App() {
              </Layout>
           }
         />
-        {/* Add more routes here if needed */}
+        <Route
+          path="/login"
+          element={
+              <Login />
+          }
+        />
       </Routes>
     </Router>
   );
