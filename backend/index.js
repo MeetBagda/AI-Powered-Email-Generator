@@ -133,6 +133,6 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
+app.listen(8888, () => {
   console.log("Server running successfully");
 });
