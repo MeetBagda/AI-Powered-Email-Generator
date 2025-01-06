@@ -49,7 +49,7 @@ export default function LoginForm() {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch("http://localhost:8888/user", {
+            const response = await fetch("http://localhost:8888/api/v1/user/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export default function LoginForm() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("http://localhost:8888/signin", {
+        const response = await fetch("http://localhost:8888/api/v1/user/signin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

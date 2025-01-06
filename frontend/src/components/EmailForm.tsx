@@ -61,7 +61,7 @@ const EmailForm = () => {
     setGeneratedEmail("");
 
     try {
-      const response = await fetch("http://localhost:8888/generate-email", {
+      const response = await fetch("http://localhost:8888/api/v1/email/generate-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
