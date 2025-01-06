@@ -28,7 +28,7 @@ function Header() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('http://localhost:3000/emails');
+        const response = await fetch('http://localhost:8888/emails');
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.msg || `Failed to fetch emails: ${response.status}`);

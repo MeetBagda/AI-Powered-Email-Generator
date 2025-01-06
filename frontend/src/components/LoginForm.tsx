@@ -49,7 +49,7 @@ export default function LoginForm() {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch("http://localhost:3000/user", {
+            const response = await fetch("http://localhost:8888/user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export default function LoginForm() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("http://localhost:3000/signin", {
+        const response = await fetch("http://localhost:8888/signin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
