@@ -2,17 +2,17 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 function LandingPage() {
-
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleStartForFreeClick = () => {
-    navigate("/email");
+    navigate("/signup");
   };
+
   return (
-    <div className=" w-full h-screen ">
-      <div className=" w-[70%] m-auto h-screen flex flex-col pb-5">
+    <div className="w-full h-screen">
+      <div className="w-[70%] m-auto h-screen flex flex-col pb-5">
         {/* header */}
-        <div className="w-full h-20  flex flex-row justify-between items-center">
+        <div className="w-full h-20 flex flex-row justify-between items-center">
           {/* logo */}
           <div className="p-3">
             <svg
@@ -43,10 +43,22 @@ function LandingPage() {
           </div>
           {/* buttons */}
           <div className="flex flex-row gap-3 p-3">
-            <Button onClick={()=>{navigate('/login')}} variant={"ghost"} className="border border-slate-400">
+            <Button
+              onClick={() => {
+                navigate("/signin");
+              }}
+              variant={"ghost"}
+              className="border border-slate-400"
+            >
               Log In
             </Button>
-            <Button onClick={()=>{navigate('/login')}}>Sign Up</Button>
+            <Button
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              Sign Up
+            </Button>
           </div>
         </div>
         {/* content */}
@@ -59,8 +71,10 @@ function LandingPage() {
             <p>Conquer Your Inbox with AI-Powered Email Generation</p>
           </div>
           <div className="flex flex-row gap-3 animate-fadeinup">
-            <Button onClick={handleStartForFreeClick} >Start for free</Button>
-            <Button className="border border-slate-400" variant={'ghost'}>Get Demo</Button>
+            <Button onClick={handleStartForFreeClick}>Start for free</Button>
+            <Button className="border border-slate-400" variant={"ghost"}>
+              Get Demo
+            </Button>
           </div>
         </div>
       </div>

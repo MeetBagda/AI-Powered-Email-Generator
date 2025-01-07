@@ -4,8 +4,8 @@ import Layout from "./components/layout";
 import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./components/Login";
-import LoginForm from "./components/LoginForm";
+import SignIn from "./pages/Signin";
+import SignUp from "./pages/Signup";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
               <LandingPage />
           }
         />
-         <Route
+        <Route
           path="/email"
           element={
             <Layout>
@@ -31,9 +31,15 @@ function App() {
           }
         />
         <Route
-          path="/login"
+          path="/signin"
           element={
-              <LoginForm />
+              <SignIn />
+          }
+        />
+         <Route
+          path="/signup"
+          element={
+              <SignUp />
           }
         />
       </Routes>

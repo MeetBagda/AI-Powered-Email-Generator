@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "@/context/authContext";
 import React from 'react';
-
+import axios from "axios";
 
 // Define the schema for sign-in
 const signInSchema = z.object({
@@ -74,24 +74,21 @@ export default function LoginForm() {
     };
 
     const handleSignInSubmit = async (data: any) => {
+      const [username, setUsername] = useState("");
+      const [password, setPassword] = useState("");
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("http://localhost:8888/api/v1/user/signin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-  
-        const responseData = await response.json();
-  
-         if (!response.ok) {
-           setError(responseData.msg);
-            return; // early return
+       
+        const response = await axios.post(
+          "http://localhost:8888/api/v1/user/signin",
+          {
+            username,
+            password,
           }
-        setUser(responseData.user);
+        );
+       
+      localStorage.setItem("token", response.data.token);
         navigate("/email");
       } catch (err: any) {
         console.error(err);
