@@ -58,39 +58,51 @@ router.post("/signup", async (req, res) => {
 });
 
 const signinBody = zod.object({
-    username: zod.string().min(3).max(30),
-  password: zod.string().min(6),
-})
-router.post("/signin", async (req, res) => {
-    const { success } = signinBody.safeParse(req.body);
-  if (!success) {
-    return res.status(411).json({
-      message: "Email already taken / Incorrect inputs",
-    });
-  }
-  const user = await User.findOne({
-    username: req.body.username,
-    password: req.body.password,
-  });
+    email: zod.string().email({ message: "Invalid email address" }),
+    password: zod.string().min(6, { message: "Password must be at least 6 characters" }),
+});
 
-  if (user) {
+router.post("/signin", async (req, res) => {
+    // Validate request body
+    const { success, error } = signinBody.safeParse(req.body);
+    if (!success) {
+        return res.status(400).json({
+            message: "Invalid input",
+            errors: error.errors,
+        });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email: req.body.email });
+    
+    if (!user) {
+        return res.status(401).json({
+            message: "Incorrect email or password",
+        });
+    }
+
+    // Compare hashed password (assuming you have a method to compare passwords)
+    // const isPasswordValid = await user.comparePassword(req.body.password); // Implement this method in your User model
+    // if (!isPasswordValid) {
+    //     return res.status(401).json({
+    //         message: "Incorrect email or password",
+    //     });
+    // }
+
+    // Generate token
     const token = jwt.sign(
-      {
-        userId: user._id,
-      },
-      JWT_SECRET
+        {
+            userId: user._id,
+        },
+        JWT_SECRET,
+        { expiresIn: '1h' } // Optional: set expiration time for the token
     );
 
     res.json({
-      token: token,
+        token: token,
     });
-    return;
-  }
-
-  res.status(411).json({
-    message: "incorrect username or password",
-  });
 });
+
 
 router.get("/users", async (req, res) => {
   try {
