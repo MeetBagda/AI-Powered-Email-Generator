@@ -20,19 +20,17 @@ const signUpSchema = z.object({
 
 type SignUpValues = z.infer<typeof signUpSchema>
 
-
 export default function SignUp() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
 
     // Create form
     const form = useForm<SignUpValues>({
         resolver: zodResolver(signUpSchema),
         defaultValues: { email: '', password: '', username: '' },
         mode: "onBlur",
-    })
+    });
 
     const { handleSubmit, reset, control } = form;
 
@@ -45,27 +43,27 @@ export default function SignUp() {
                 "http://localhost:8888/api/v1/user/signup",
                 data
             );
-    
+
             console.log("Response Status:", response.status); // check response status
             console.log("Response Data:", response.data);  // Check the data from the server
             if (response.status !== 201 && response.status !== 200) {
                 setError(response.data?.msg || "Signup Failed");
                 console.error("Signup failed with status:", response.status);
             } else {
-                  console.log("Signup successful, navigating to /email");
+                console.log("Signup successful, navigating to /email");
                 reset();
                 navigate("/email");
             }
         } catch (err: any) {
             console.error("Signup error:", err);
-              setError(err.response?.data?.msg || "An error occurred. Please try again.");
+            setError(err.response?.data?.msg || "An error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     const onSubmit = async (e: React.BaseSyntheticEvent) => {
-        handleSubmit(handleSignUpSubmit)(e)
+        handleSubmit(handleSignUpSubmit)(e);
     };
 
     return (
@@ -76,7 +74,7 @@ export default function SignUp() {
                     <CardDescription>Create a new account</CardDescription>
                 </CardHeader>
                 <CardContent>
-                     <FormProvider {...form}>
+                    <FormProvider {...form}>
                         <form onSubmit={onSubmit} className="space-y-4">
                             <FormField
                                 control={control}
@@ -122,10 +120,19 @@ export default function SignUp() {
                             </Button>
                             {error && <FormMessage>{error}</FormMessage>}
                         </form>
-                     </FormProvider>
+                    </FormProvider>
                 </CardContent>
-                <CardFooter>
-                 
+                <CardFooter className="flex justify-between">
+                    {/* Link to Sign In Page */}
+                    <span className="text-sm">
+                        Already have an account? 
+                        <button 
+                            onClick={() => navigate('/signin')} 
+                            className="text-blue-500 hover:underline ml-1"
+                        >
+                            Sign In
+                        </button>
+                    </span>
                 </CardFooter>
             </Card>
         </div>
