@@ -10,6 +10,8 @@
 
 ![image](https://github.com/user-attachments/assets/f7a166ee-7554-4cab-b662-2145cb23f575)
 
+![image](https://github.com/user-attachments/assets/81c9dae4-e779-4d3c-abd0-55130e2897dc)
+
 
 This project is an AI-powered email generator that leverages the power of Google's Gemini models to create personalized emails based on user prompts.
 
