@@ -4,8 +4,9 @@ const cors = require("cors");
 const { generateEmailSchema, userSchema, getAllUserSchema } = require("../types");
 const {Email} = require("../db");
 const axios = require("axios");
+const { authMiddleware } = require("../middleware");
 
-router.post("/generate-email", async (req, res) => {
+router.post("/generate-email",authMiddleware, async (req, res) => {
     const createPayLoad = req.body;
     const parsedPayLoad = generateEmailSchema.safeParse(createPayLoad);
   
