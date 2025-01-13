@@ -34,6 +34,7 @@ router.post("/generate-email",authMiddleware, async (req, res) => {
         tone: createPayLoad.tone || "professional",
         generatedEmail: generatedEmail || "",
         createdAt: new Date(),
+        userId: req.userId, // Add userId from authenticated user
       });
   
       console.log(createPayLoad);
@@ -59,6 +60,28 @@ router.post("/generate-email",authMiddleware, async (req, res) => {
       res
         .status(500)
         .json({ msg: "Error fetching emails", error: error.message });
+    }
+  });
+
+  router.get("/emails/user/:userId", authMiddleware, async (req, res) => {
+    try {
+          const userId = req.params.userId; //Extract user id from parameters
+        if (req.userId !== userId) {
+            return res.status(403).json({msg: "Unauthorized"})
+        }
+  
+      const emails = await Email.find({ userId: userId })
+  
+      res.status(200).json({
+        msg: "Email history for user retrieved.",
+        emails: emails,
+      });
+    } catch (error) {
+      console.error("Error fetching email history:", error);
+      res.status(500).json({
+        msg: "Error fetching email history",
+        error: error.message,
+      });
     }
   });
 
