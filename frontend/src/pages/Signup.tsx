@@ -52,34 +52,45 @@ export default function SignUp() {
 
   const { handleSubmit, reset, control } = form;
 
-  const handleSignUpSubmit = async (data: SignUpValues) => {
-    setLoading(true);
-    setError(null);
-    console.log("Attempting signup with:", data); // Check the data being sent
-    try {
-      const response = await axios.post(
-        "http://localhost:8888/api/v1/user/signup",
-        data
-      );
+    const handleSignUpSubmit = async (data: SignUpValues) => {
+        setLoading(true);
+        setError(null);
+        console.log("Attempting signup with:", data);
+        try {
+            const response = await axios.post(
+                "http://localhost:8888/api/v1/user/signup",
+                data,
+               {
+                  headers: {
+                     "Content-Type": "application/json",
+                   }
+                 }
+            );
 
-      console.log("Response Status:", response.status); // check response status
-      console.log("Response Data:", response.data); // Check the data from the server
-      if (response.status !== 201 && response.status !== 200) {
-        setError(response.data?.msg || "Signup Failed");
-        console.error("Signup failed with status:", response.status);
-      } else {
-        console.log("Signup successful, navigating to /email");
-        reset();
-        navigate("/email");
-      }
-    } catch (err: any) {
-      console.error("Signup error:", err);
-      setError(
-        err.response?.data?.msg || "An error occurred. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
+
+            console.log("Response Status:", response.status);
+            console.log("Response Data:", response.data);
+
+           if (response.status === 201 || response.status === 200) {
+                 console.log("Signup successful");
+                // Store token and userId in local storage upon success
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("userId", response.data.userId);
+                reset();
+                navigate("/email");
+           } else {
+                 setError(response.data?.msg || "Signup Failed");
+               console.error("Signup failed with status:", response.status);
+           }
+
+        } catch (err: any) {
+             console.error("Signup error:", err);
+            setError(
+                err.response?.data?.msg || "An error occurred. Please try again."
+            );
+        } finally {
+          setLoading(false);
+       }
   };
 
   const onSubmit = async (e: React.BaseSyntheticEvent) => {

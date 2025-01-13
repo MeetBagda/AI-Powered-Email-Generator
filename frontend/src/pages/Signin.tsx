@@ -56,17 +56,22 @@ export default function SignIn() {
       const response = await axios.post(
         "http://localhost:8888/api/v1/user/signin",
         data,
-        {
+          {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
 
-      // Store token and navigate on success
-      localStorage.setItem("token", response.data.token);
-      reset();
-      navigate("/email");
+        if(response.status === 200){
+            // Store token and userId on success
+          localStorage.setItem("token", response.data.token);
+           localStorage.setItem("userId", response.data.userId);
+        reset();
+        navigate("/email");
+         } else{
+           setError("An error occurred. Please try again.")
+         }
     } catch (err: any) {
       console.error(err);
       setError(
