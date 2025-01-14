@@ -1,8 +1,16 @@
-'use client';
-import React, { useState, useEffect } from 'react';
+"use client";
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { Copy, Check } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface Email {
     _id: string;
@@ -21,53 +29,77 @@ function Header() {
     const [previousEmails, setPreviousEmails] = useState<Email[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [emailCount, setEmailCount] = useState(0);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
 
-    useEffect(() => {
-        const fetchEmails = async () => {
-            if(!userId || !token) {
-              setPreviousEmails([])
-               return;
+    const fetchEmails = useCallback(async () => {
+        if(!userId || !token) {
+            setPreviousEmails([])
+            return;
+        }
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`http://localhost:8888/api/v1/email/emails/user/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                     'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.msg || `Failed to fetch emails: ${response.status}`);
             }
-            setLoading(true);
-            setError(null);
+            const data = await response.json();
+            setPreviousEmails(data.emails || []);
 
-            try {
-                const response = await fetch(`http://localhost:8888/api/v1/email/emails/user/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                         'Content-Type': 'application/json',
-                    },
-                });
-
-
-                if (!response.ok) {
-                   const errorData = await response.json();
-                   throw new Error(errorData.msg || `Failed to fetch emails: ${response.status}`);
-                }
-                 const data = await response.json();
-                 setPreviousEmails(data.emails || []);
-            } catch (err: any) {
-                console.error("Error fetching emails:", err);
-                setError(err.message || "Failed to fetch emails, please try again")
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEmails();
+        } catch (err: any) {
+            console.error("Error fetching emails:", err);
+            setError(err.message || "Failed to fetch emails, please try again");
+        } finally {
+            setLoading(false);
+        }
     }, [userId, token]);
+
+
+    useEffect(() => {
+        fetchEmails()
+    }, [fetchEmails, emailCount]);
 
     const reversedEmails = [...previousEmails].reverse();
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-      localStorage.removeItem("userId");
+        localStorage.removeItem("userId");
         navigate("/signin");
+    };
+
+     const handleEmailGenerated = () => {
+         setEmailCount((prevCount) => prevCount + 1);
+      };
+
+
+       useEffect(() => {
+        localStorage.setItem("handleEmailGenerated", JSON.stringify(handleEmailGenerated));
+    }, [handleEmailGenerated]);
+
+  // copy function, just like in EmailForm component
+     const copyToClipboard = async (emailText: string) => {
+        if (!emailText) return; // Prevent copying if no email generated
+
+        try {
+            await navigator.clipboard.writeText(emailText);
+            alert("Email copied to clipboard!");
+        } catch (error) {
+            console.error("Error copying to clipboard:", error);
+            alert("Failed to copy email to clipboard.");
+        }
     };
 
     return (
@@ -130,12 +162,46 @@ function Header() {
                         ) : (
                             <div className="max-h-[400px] overflow-y-auto">
                                 {reversedEmails.map((email) => (
-                                    <div key={email._id} className="border-b pb-4 mb-4 ">
-                                        <p className="font-bold">To: {email.recipients}</p>
-                                        <p className="font-semibold">From: {email.senders}</p>
-                                        <p className="font-semibold">Subject: {email.subjectLine}</p>
-                                        <p>Purpose: {email.purpose}</p>
-                                        <p> {email.generatedEmail}</p>
+                                    <div key={email._id} className="border-b pb-4 mb-4 flex flex-col gap-2">
+                                        <div>
+                                            <div className='flex flex-row justify-between items-center gap-2'>
+                                             <div className='flex flex-col '>
+                                            <p className="font-bold">To: {email.recipients}</p>
+                                             <p className="font-semibold">From: {email.senders}</p>
+
+                                             </div>
+                                             <div>
+                                            <TooltipProvider delayDuration={0}>
+                                             <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                   <Button
+                                                      variant="outline"
+                                                       size="icon"
+                                                       className="disabled:opacity-100"
+                                                       onClick={()=>copyToClipboard(email.generatedEmail)}
+                                                     >
+
+                                                          <Copy size={16} strokeWidth={2} aria-hidden="true" />
+                                                    </Button>
+                                               </TooltipTrigger>
+                                              <TooltipContent className="px-2 py-1 text-xs">
+                                                   Click to copy
+                                               </TooltipContent>
+                                            </Tooltip>
+                                            </TooltipProvider>
+                                            </div>
+                                             </div>
+                                             <p className="font-semibold">Subject: {email.subjectLine}</p>
+                                              <p>Purpose: {email.purpose}</p>
+                                          </div>
+                                           <div className="flex flex-row justify-between items-center">
+                                            <pre className="text-slate-700" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", width: '80%' }}>
+                                               {email.generatedEmail}
+                                             </pre>
+
+                                         
+                                            </div>
+                                            
                                     </div>
                                 ))}
                             </div>
