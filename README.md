@@ -1,17 +1,16 @@
 # AI-Powered Email Generator
 
-![image](https://github.com/user-attachments/assets/a9195519-66a7-45a6-b0c5-8c4154138986)
+![landing-page](https://github.com/user-attachments/assets/a9195519-66a7-45a6-b0c5-8c4154138986)
 
-![image](https://github.com/user-attachments/assets/165db480-d4cf-471c-8cfd-2bd9c0af7d65)
+![signin](https://github.com/user-attachments/assets/165db480-d4cf-471c-8cfd-2bd9c0af7d65)
 
-![image](https://github.com/user-attachments/assets/f2c5983c-ef33-484e-882e-d0d6f64b091c)
+![signup](https://github.com/user-attachments/assets/f2c5983c-ef33-484e-882e-d0d6f64b091c)
 
-![image](https://github.com/user-attachments/assets/3927ad38-6f10-4806-bf2b-e9174c2e08c7)
+![dashboard](https://github.com/user-attachments/assets/412906c4-0a94-4404-a336-69a0a6dd5668)
 
-![image](https://github.com/user-attachments/assets/f7a166ee-7554-4cab-b662-2145cb23f575)
+![email-history](https://github.com/user-attachments/assets/2a582f18-5545-4c25-b07d-028d94bc10dd)
 
-![image](https://github.com/user-attachments/assets/81c9dae4-e779-4d3c-abd0-55130e2897dc)
-
+![favorite email](https://github.com/user-attachments/assets/76a08929-8184-4634-9277-10d7de283b39)
 
 This project is an AI-powered email generator that leverages the power of Google's Gemini models to create personalized emails based on user prompts.
 
