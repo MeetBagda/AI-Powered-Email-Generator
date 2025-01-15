@@ -3,12 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Star } from "lucide-react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -22,18 +22,20 @@ interface Email {
     tone: string;
     generatedEmail: string;
     createdAt: Date;
+    isFavorite: boolean;
 }
 
 function Header() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isFavoriteOpen, setIsFavoriteOpen] = useState(false);
     const [previousEmails, setPreviousEmails] = useState<Email[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [favoriteEmails, setFavoriteEmails] = useState<Email[]>([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [emailCount, setEmailCount] = useState(0);
-    const navigate = useNavigate();
+     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-
 
     const fetchEmails = useCallback(async () => {
         if(!userId || !token) {
@@ -52,12 +54,13 @@ function Header() {
                 },
             });
 
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.msg || `Failed to fetch emails: ${response.status}`);
             }
             const data = await response.json();
-            setPreviousEmails(data.emails || []);
+           setPreviousEmails(data.emails || []);
 
         } catch (err: any) {
             console.error("Error fetching emails:", err);
@@ -67,12 +70,49 @@ function Header() {
         }
     }, [userId, token]);
 
+    const fetchFavoriteEmails = useCallback(async () => {
+           if(!userId || !token) {
+            setFavoriteEmails([])
+            return;
+        }
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`http://localhost:8888/api/v1/email/emails/user/${userId}/favorites`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                     'Content-Type': 'application/json',
+                },
+            });
+
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.msg || `Failed to fetch emails: ${response.status}`);
+            }
+            const data = await response.json();
+           setFavoriteEmails(data.emails || []);
+        } catch (err: any) {
+            console.error("Error fetching favorite emails:", err);
+            setError(err.message || "Failed to fetch favorite emails, please try again");
+        } finally {
+           setLoading(false);
+        }
+     }, [userId, token]);
+
 
     useEffect(() => {
-        fetchEmails()
+        fetchEmails();
     }, [fetchEmails, emailCount]);
 
+    useEffect(() => {
+        fetchFavoriteEmails();
+    }, [fetchFavoriteEmails, emailCount]);
+
     const reversedEmails = [...previousEmails].reverse();
+    const reversedFavoriteEmails = [...favoriteEmails].reverse();
+
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -80,18 +120,18 @@ function Header() {
         navigate("/signin");
     };
 
-     const handleEmailGenerated = () => {
-         setEmailCount((prevCount) => prevCount + 1);
-      };
+    const handleEmailGenerated = () => {
+        setEmailCount((prevCount) => prevCount + 1);
+    };
 
 
-       useEffect(() => {
+    useEffect(() => {
         localStorage.setItem("handleEmailGenerated", JSON.stringify(handleEmailGenerated));
     }, [handleEmailGenerated]);
 
-  // copy function, just like in EmailForm component
-     const copyToClipboard = async (emailText: string) => {
-        if (!emailText) return; // Prevent copying if no email generated
+
+    const copyToClipboard = async (emailText: string) => {
+        if (!emailText) return;
 
         try {
             await navigator.clipboard.writeText(emailText);
@@ -101,6 +141,29 @@ function Header() {
             alert("Failed to copy email to clipboard.");
         }
     };
+   const handleFavorite = async (emailId:string) => {
+        try {
+            const response = await fetch(`http://localhost:8888/api/v1/email/emails/${emailId}/favorite`, {
+                  method: 'PUT',
+                  headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'application/json',
+                  },
+               });
+
+            if(!response.ok){
+                const errorData = await response.json()
+                throw new Error(errorData.msg || "Error while changing favorite state")
+            }
+             fetchEmails();
+             fetchFavoriteEmails()
+
+        } catch (err: any) {
+            console.error("Error during changing favorites:", err);
+            setError(err.message || "Failed to update favorites, please try again");
+        }
+    };
+
 
     return (
         <div className="flex flex-row items-center w-full h-14 border-b-2 text-xl font-bold text-slate-700 pt-3 pl-5 justify-between">
@@ -150,9 +213,9 @@ function Header() {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[700px]">
                         <DialogHeader>
-                            <DialogTitle>Previous Emails</DialogTitle>
+                            <DialogTitle>Previous Emails ({previousEmails.length})</DialogTitle>
                             <DialogDescription>
-                                Here is list of your previous emails
+                               Here is list of your previous emails
                             </DialogDescription>
                         </DialogHeader>
                         {loading ? (
@@ -165,43 +228,140 @@ function Header() {
                                     <div key={email._id} className="border-b pb-4 mb-4 flex flex-col gap-2">
                                         <div>
                                             <div className='flex flex-row justify-between items-center gap-2'>
-                                             <div className='flex flex-col '>
-                                            <p className="font-bold">To: {email.recipients}</p>
-                                             <p className="font-semibold">From: {email.senders}</p>
-
-                                             </div>
-                                             <div>
-                                            <TooltipProvider delayDuration={0}>
-                                             <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                   <Button
-                                                      variant="outline"
-                                                       size="icon"
-                                                       className="disabled:opacity-100"
-                                                       onClick={()=>copyToClipboard(email.generatedEmail)}
-                                                     >
-
-                                                          <Copy size={16} strokeWidth={2} aria-hidden="true" />
-                                                    </Button>
-                                               </TooltipTrigger>
-                                              <TooltipContent className="px-2 py-1 text-xs">
-                                                   Click to copy
-                                               </TooltipContent>
-                                            </Tooltip>
-                                            </TooltipProvider>
+                                                <div className='flex flex-col '>
+                                                    <p className="font-bold">To: {email.recipients}</p>
+                                                    <p className="font-semibold">From: {email.senders}</p>
+                                                </div>
+                                                <div className="flex flex-row items-center gap-2">
+                                                    <TooltipProvider delayDuration={0}>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="icon"
+                                                                    className="disabled:opacity-100"
+                                                                    onClick={()=>copyToClipboard(email.generatedEmail)}
+                                                                >
+                                                                    <Copy size={16} strokeWidth={2} aria-hidden="true" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="px-2 py-1 text-xs">
+                                                                Click to copy
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                    <TooltipProvider delayDuration={0}>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="icon"
+                                                                    className="disabled:opacity-100"
+                                                                    onClick={() => handleFavorite(email._id)}
+                                                                >
+                                                                    <Star size={16} strokeWidth={2} aria-hidden="true" fill={email.isFavorite ? "#ffc107" : "none"}  />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="px-2 py-1 text-xs">
+                                                                 {email.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </div>
                                             </div>
-                                             </div>
-                                             <p className="font-semibold">Subject: {email.subjectLine}</p>
-                                              <p>Purpose: {email.purpose}</p>
-                                          </div>
-                                           <div className="flex flex-row justify-between items-center">
+                                            <p className="font-semibold">Subject: {email.subjectLine}</p>
+                                            <p>Purpose: {email.purpose}</p>
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center">
                                             <pre className="text-slate-700" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", width: '80%' }}>
-                                               {email.generatedEmail}
-                                             </pre>
+                                                {email.generatedEmail}
+                                            </pre>
 
-                                         
+
+                                        </div>
+
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                    </DialogContent>
+                </Dialog>
+                 <Dialog open={isFavoriteOpen} onOpenChange={setIsFavoriteOpen}>
+                    <DialogTrigger asChild>
+                         <Button variant="outline">
+                                <Star size={20} /> Favorites
+                          </Button>
+                     </DialogTrigger>
+                     <DialogContent className="sm:max-w-[700px]">
+                        <DialogHeader>
+                            <DialogTitle>Favorite Emails ({favoriteEmails.length})</DialogTitle>
+                           <DialogDescription>
+                                Here is list of your favorited emails
+                            </DialogDescription>
+                        </DialogHeader>
+                      {loading ? (
+                            <div className="flex justify-center items-center">Loading...</div>
+                         ) : error ? (
+                            <div className="text-red-500">{error}</div>
+                        ) : (
+                            <div className="max-h-[400px] overflow-y-auto">
+                                {reversedFavoriteEmails.map((email) => (
+                                    <div key={email._id} className="border-b pb-4 mb-4 flex flex-col gap-2">
+                                        <div>
+                                            <div className='flex flex-row justify-between items-center gap-2'>
+                                                <div className='flex flex-col '>
+                                                    <p className="font-bold">To: {email.recipients}</p>
+                                                    <p className="font-semibold">From: {email.senders}</p>
+                                                </div>
+                                                <div className="flex flex-row items-center gap-2">
+                                                    <TooltipProvider delayDuration={0}>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="icon"
+                                                                    className="disabled:opacity-100"
+                                                                    onClick={()=>copyToClipboard(email.generatedEmail)}
+                                                                >
+                                                                    <Copy size={16} strokeWidth={2} aria-hidden="true" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="px-2 py-1 text-xs">
+                                                                Click to copy
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                    <TooltipProvider delayDuration={0}>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="icon"
+                                                                    className="disabled:opacity-100"
+                                                                    onClick={() => handleFavorite(email._id)}
+                                                                >
+                                                                    <Star size={16} strokeWidth={2} aria-hidden="true" fill={email.isFavorite ? "#ffc107" : "none"}  />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="px-2 py-1 text-xs">
+                                                                  {email.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </div>
                                             </div>
-                                            
+                                            <p className="font-semibold">Subject: {email.subjectLine}</p>
+                                            <p>Purpose: {email.purpose}</p>
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center">
+                                            <pre className="text-slate-700" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", width: '80%' }}>
+                                                {email.generatedEmail}
+                                            </pre>
+
+
+                                        </div>
+
                                     </div>
                                 ))}
                             </div>

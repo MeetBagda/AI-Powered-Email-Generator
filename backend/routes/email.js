@@ -85,4 +85,44 @@ router.post("/generate-email",authMiddleware, async (req, res) => {
     }
   });
 
+  // New GET request for getting only favorite emails
+router.get("/emails/user/:userId/favorites", async (req, res) => {
+  try {
+      const userId = req.params.userId;
+
+       const favoriteEmails = await Email.find({ userId: userId, isFavorite: true }).sort({ createdAt: -1 });
+      res.status(200).json({
+        msg: "Favorite emails retrieved.",
+        emails: favoriteEmails,
+      });
+  } catch (error) {
+      console.error("Error fetching favorite emails:", error);
+      res.status(500).json({
+        msg: "Error fetching favorite emails",
+        error: error.message,
+      });
+  }
+});
+
+router.put("/emails/:emailId/favorite", async (req, res) => {
+  const { emailId } = req.params;
+  try {
+      const email = await Email.findById(emailId);
+      if (!email) {
+          return res.status(404).json({ msg: "Email not found" });
+      }
+
+     
+      email.isFavorite = !email.isFavorite;
+      await email.save();
+      res.status(200).json({ msg: "Email favorite status updated", email });
+  } catch (error) {
+      console.error("Error updating email favorite status:", error);
+      res.status(500).json({
+          msg: "Error updating email favorite status",
+          error: error.message,
+      });
+  }
+});
+
   module.exports = router;
