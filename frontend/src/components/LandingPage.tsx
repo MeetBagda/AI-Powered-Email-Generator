@@ -72,9 +72,9 @@ function LandingPage() {
           </div>
           <div className="flex flex-row gap-3 animate-fadeinup">
             <Button onClick={handleStartForFreeClick}>Start for free</Button>
-            <Button className="border border-slate-400" variant={"ghost"}>
+            {/* <Button className="border border-slate-400" variant={"ghost"}>
               Get Demo
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
