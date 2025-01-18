@@ -50,4 +50,5 @@ def generate_email():
          return jsonify({"error": "Failed to generate email. Please try again."}), 500
 
 if __name__ == '__main__':
+    print("Flask server starting...")
     app.run(debug=True)
