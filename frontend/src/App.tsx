@@ -50,7 +50,7 @@ const AuthRoute = ({ children }: any) => {
         if (!token) {
           return;
         }
-        await axios.get("http://localhost:8888/api/v1/user/me", {
+        await axios.get("https://ai-powered-email-generator.onrender.com/api/v1/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -76,7 +76,7 @@ const ProtectedRoute = ({ children }: any) => {
         if (!token) {
           navigate("/signin");
         }
-        await axios.get("http://localhost:8888/api/v1/user/me", {
+        await axios.get("https://ai-powered-email-generator.onrender.com/api/v1/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

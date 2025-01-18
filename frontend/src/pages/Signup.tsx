@@ -58,7 +58,7 @@ export default function SignUp() {
         console.log("Attempting signup with:", data);
         try {
             const response = await axios.post(
-                "http://localhost:8888/api/v1/user/signup",
+                "https://ai-powered-email-generator.onrender.com/api/v1/user/signup",
                 data,
                {
                   headers: {

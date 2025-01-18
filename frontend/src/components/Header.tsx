@@ -46,7 +46,7 @@ function Header() {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:8888/api/v1/email/emails/user/${userId}`, {
+            const response = await fetch(`https://ai-powered-email-generator.onrender.com/api/v1/email/emails/user/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -78,7 +78,7 @@ function Header() {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`http://localhost:8888/api/v1/email/emails/user/${userId}/favorites`, {
+            const response = await fetch(`https://ai-powered-email-generator.onrender.com/api/v1/email/emails/user/${userId}/favorites`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -143,7 +143,7 @@ function Header() {
     };
    const handleFavorite = async (emailId:string) => {
         try {
-            const response = await fetch(`http://localhost:8888/api/v1/email/emails/${emailId}/favorite`, {
+            const response = await fetch(`https://ai-powered-email-generator.onrender.com/api/v1/email/emails/${emailId}/favorite`, {
                   method: 'PUT',
                   headers: {
                       'Authorization': `Bearer ${token}`,
