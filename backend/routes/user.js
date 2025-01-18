@@ -1,4 +1,3 @@
-// backend/user.js
 const express = require("express");
 const router = express.Router();
 const { userSchema } = require("../types");
@@ -7,21 +6,31 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const zod = require('zod');
 const { authMiddleware } = require("../middleware");
+const cors = require('cors');
+
+// Enable CORS for all routes in this router
+// or use the below for specific origins.
+router.use(cors({
+    origin: 'https://email-generator-git-main-meet-projects.vercel.app',
+    methods: ["POST", "GET", "PUT", "DELETE"]
+}));
+//If you would like to allow all origins, use the line below
+//router.use(cors());
 
 router.get("/me", authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId);
-  
+
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+        return res.status(404).json({
+            message: "User not found",
+        });
     }
-  
+
     res.json({
-      id: user._id,
-      username: user.username,
+        id: user._id,
+        username: user.username,
     });
-  });
+});
 
 router.post("/signup", async (req, res) => {
     const createPayLoad = req.body;
