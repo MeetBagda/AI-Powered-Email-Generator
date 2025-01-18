@@ -24,6 +24,7 @@ This project is an AI-powered email generator that leverages the power of Google
 
 *   **Frontend:** React.js with TypeScript
 *   **Backend API:** Node.js with Express.js
+*   **Auth:** JWT
 *    **AI Model Interaction Layer:** Python with Flask
 *   **AI Model:** Google Gemini (via their API)
 *   **Other Packages:** See `package.json` files (for frontend and backend) and `requirements.txt` for Python dependencies for details.
