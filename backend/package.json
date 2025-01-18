@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js", 
+    "build": "npm run clean && npm run compile", 
+    "clean": "rimraf ./dist", 
+    "compile": "babel src --out-dir dist --copy-files", 
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
