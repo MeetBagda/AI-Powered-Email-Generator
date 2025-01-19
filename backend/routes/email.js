@@ -19,7 +19,7 @@ router.post("/generate-email",authMiddleware, async (req, res) => {
   
     try {
       const pythonResponse = await axios.post(
-        "http://127.0.0.1:5000/generate-email",
+        "https://ai-powered-email-generator-1.onrender.com/generate-email",
         createPayLoad
       );
   
