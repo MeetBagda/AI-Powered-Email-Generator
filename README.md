@@ -1,5 +1,8 @@
 # AI-Powered Email Generator
 
+Check out
+https://email-generator-puce.vercel.app/
+
 ![landing-page](https://github.com/user-attachments/assets/a9195519-66a7-45a6-b0c5-8c4154138986)
 
 ![signin](https://github.com/user-attachments/assets/165db480-d4cf-471c-8cfd-2bd9c0af7d65)
