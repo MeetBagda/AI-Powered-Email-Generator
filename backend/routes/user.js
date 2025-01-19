@@ -11,7 +11,7 @@ const cors = require('cors');
 // Enable CORS for all routes in this router
 // or use the below for specific origins.
 router.use(cors({
-    origin: 'https://email-generator-git-main-meet-projects.vercel.app',
+    origin: 'https://email-generator-puce.vercel.app',
     methods: ["POST", "GET", "PUT", "DELETE"]
 }));
 //If you would like to allow all origins, use the line below
