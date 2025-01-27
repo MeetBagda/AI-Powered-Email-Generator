@@ -40,6 +40,16 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+   // Get the environment variables
+   const apiUrlLocal = import.meta.env.VITE_API_URL_LOCAL;
+   const apiUrlProduction = import.meta.env.VITE_API_URL_PRODUCTION;
+ 
+   // Determine the base URL based on the environment
+   const apiBaseUrl =
+     window.location.hostname === "localhost" ? apiUrlLocal : apiUrlProduction;
+ 
+ 
+
   // Create form
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -49,12 +59,16 @@ export default function SignIn() {
 
   const { handleSubmit, reset, control } = form;
 
+  const axiosInstance = axios.create({
+    baseURL: apiBaseUrl
+})
+
   const handleSignInSubmit = async (data: SignInValues) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(
-        "https://ai-powered-email-generator.onrender.com/api/v1/user/signin",
+      const response = await axiosInstance.post(
+        "/user/signin",
         data,
           {
           headers: {

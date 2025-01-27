@@ -43,12 +43,25 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Get the environment variables
+  const apiUrlLocal = import.meta.env.VITE_API_URL_LOCAL;
+  const apiUrlProduction = import.meta.env.VITE_API_URL_PRODUCTION;
+
+  // Determine the base URL based on the environment
+  const apiBaseUrl =
+    window.location.hostname === "localhost" ? apiUrlLocal : apiUrlProduction;
+
+
   // Create form
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: { email: "", password: "", username: "" },
     mode: "onBlur",
   });
+
+  const axiosInstance = axios.create({
+    baseURL: apiBaseUrl
+})
 
   const { handleSubmit, reset, control } = form;
 
@@ -57,8 +70,8 @@ export default function SignUp() {
         setError(null);
         console.log("Attempting signup with:", data);
         try {
-            const response = await axios.post(
-                "https://ai-powered-email-generator.onrender.com/api/v1/user/signup",
+            const response = await axiosInstance.post(
+                "/user/signup",
                 data,
                {
                   headers: {

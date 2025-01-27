@@ -40,6 +40,16 @@ const EmailForm = () => {
     watch,
     formState: { errors },
   } = methods;
+
+  // Get the environment variables
+  const apiUrlLocal = import.meta.env.VITE_API_URL_LOCAL;
+  const apiUrlProduction = import.meta.env.VITE_API_URL_PRODUCTION;
+
+  // Determine the base URL based on the environment
+  const apiBaseUrl =
+      window.location.hostname === "localhost" ? apiUrlLocal : apiUrlProduction;
+
+
   const [generatedEmail, setGeneratedEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +60,7 @@ const EmailForm = () => {
     setGeneratedEmail("");
 
     try {
-      const response = await fetch("https://ai-powered-email-generator.onrender.com/api/v1/email/generate-email", {
+      const response = await fetch(`${apiBaseUrl}/email/generate-email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
