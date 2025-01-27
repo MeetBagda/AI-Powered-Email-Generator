@@ -5,15 +5,6 @@ const { generateEmailSchema, userSchema, getAllUserSchema } = require("../types"
 const {Email} = require("../db");
 const axios = require("axios");
 const { authMiddleware } = require("../middleware");
-// Get environment variables
-const pythonServiceUrlLocal = process.env.PYTHON_SERVICE_URL_LOCAL;
-const pythonServiceUrlProduction = process.env.PYTHON_SERVICE_URL_PRODUCTION;
-
-// Determine the python service URL based on environment
-const pythonServiceUrl =
-  process.env.NODE_ENV === "development"
-    ? pythonServiceUrlLocal
-    : pythonServiceUrlProduction;
 
 router.post("/generate-email",authMiddleware, async (req, res) => {
     const createPayLoad = req.body;
@@ -28,7 +19,7 @@ router.post("/generate-email",authMiddleware, async (req, res) => {
   
     try {
       const pythonResponse = await axios.post(
-        `${pythonServiceUrl}/generate-email`,
+        "https://ai-powered-email-generator-1.onrender.com/generate-email",
         createPayLoad
       );
   

@@ -43,71 +43,50 @@ function App() {
 
 const AuthRoute = ({ children }: any) => {
   const navigate = useNavigate();
-  const apiUrlLocal = import.meta.env.VITE_API_URL_LOCAL;
-  const apiUrlProduction = import.meta.env.VITE_API_URL_PRODUCTION;
-
-  // Determine the base URL based on the environment
-  const apiBaseUrl =
-      window.location.hostname === "localhost" ? apiUrlLocal : apiUrlProduction;
-   const axiosInstance = axios.create({
-      baseURL: apiBaseUrl
-    })
-
   useEffect(() => {
-      const checkAuth = async () => {
-          try {
-              const token = localStorage.getItem("token");
-              if (!token) {
-                return;
-              }
-            await axiosInstance.get("/user/me", {
-                  headers: {
-                      Authorization: `Bearer ${token}`,
-                  },
-              });
-              navigate("/email");
-          } catch (err) {
-              console.error("Error checking auth:", err);
-          }
-      };
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          return;
+        }
+        await axios.get("https://ai-powered-email-generator.onrender.com/api/v1/user/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        navigate("/email");
+      } catch (err) {
+        console.error("Error checking auth:", err);
+      }
+    };
 
-      checkAuth();
-  }, [navigate, axiosInstance]);
+    checkAuth();
+  }, [navigate]);
   return children;
 };
 
 const ProtectedRoute = ({ children }: any) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-   const apiUrlLocal = import.meta.env.VITE_API_URL_LOCAL;
-  const apiUrlProduction = import.meta.env.VITE_API_URL_PRODUCTION;
-
-  // Determine the base URL based on the environment
-  const apiBaseUrl =
-      window.location.hostname === "localhost" ? apiUrlLocal : apiUrlProduction;
-
-      const axiosInstance = axios.create({
-      baseURL: apiBaseUrl
-    })
-
 
   useEffect(() => {
-      const checkAuth = async () => {
-          try {
-               if (!token) {
-                   navigate("/signin");
-               }
-              await axiosInstance.get("/user/me", {
-                  headers: {
-                      Authorization: `Bearer ${token}`,
-                  },
-              });
-          } catch (e) {
-              navigate("/signin");
-          }
-      };
-      checkAuth();
-  }, [navigate, token, axiosInstance]);
+    const checkAuth = async () => {
+      try {
+        if (!token) {
+          navigate("/signin");
+        }
+        await axios.get("https://ai-powered-email-generator.onrender.com/api/v1/user/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (e) {
+        navigate("/signin");
+      }
+    };
+    checkAuth();
+  }, [navigate, token]);
   return children;
 };
 
