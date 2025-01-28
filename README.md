@@ -9,7 +9,7 @@ https://email-generator-puce.vercel.app/
 
 ![signup](https://github.com/user-attachments/assets/f2c5983c-ef33-484e-882e-d0d6f64b091c)
 
-![dashboard](https://github.com/user-attachments/assets/412906c4-0a94-4404-a336-69a0a6dd5668)
+![updated dashboard](https://github.com/user-attachments/assets/4bc68faa-0c20-40bb-8213-51ad82418dc3)
 
 ![email-history](https://github.com/user-attachments/assets/2a582f18-5545-4c25-b07d-028d94bc10dd)
 
