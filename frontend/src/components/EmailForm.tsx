@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import {
   FormItem,
@@ -18,8 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
- import { Loader2 } from "lucide-react";
-
 
 interface FormValues {
   purpose: string;
@@ -40,26 +38,11 @@ const EmailForm = () => {
   const {
     handleSubmit,
     watch,
-    register,
     formState: { errors },
   } = methods;
   const [generatedEmail, setGeneratedEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-   const [apiUrl, setApiUrl] = useState("");
-
-
-   useEffect(() => {
-     if (typeof window !== 'undefined') {
-         const hostname = window.location.hostname;
-          if (hostname === "localhost") {
-            setApiUrl(import.meta.env.VITE_API_URL_LOCAL)
-          } else {
-            setApiUrl(import.meta.env.VITE_API_URL_PRODUCTION)
-         }
-      }
-   }, []);
-
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setLoading(true);
@@ -67,7 +50,7 @@ const EmailForm = () => {
     setGeneratedEmail("");
 
     try {
-      const response = await fetch(`${apiUrl}/email/generate-email`, {
+      const response = await fetch("https://ai-powered-email-generator.onrender.com/api/v1/email/generate-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,8 +93,9 @@ const EmailForm = () => {
     }
   };
 
+
   return (
-    <div className="flex flex-row gap-3 w-full h-full">
+    <>
       <div className="pl-5" style={{ width: "40%" }}>
         <div
           className="email-container w-full h-full flex flex-row justify-center items-center"
@@ -130,19 +114,15 @@ const EmailForm = () => {
               <FormItem className="w-full">
                 <FormLabel htmlFor="purpose">Purpose:</FormLabel>
                 <FormControl>
+                  {/* <OriginTextArea /> */}
                   <Textarea
                     id="purpose"
-                    {...register("purpose")}
+                    {...methods.register("purpose")}
                     required
                     placeholder="Example: I am writing an email to my boss for salary increment."
-                    className={`rounded-md  ${
-                      errors.purpose ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className="rounded-2xl"
                   />
                 </FormControl>
-                {errors.purpose && (
-                  <FormMessage>{errors.purpose?.message}</FormMessage>
-                )}
               </FormItem>
               <FormItem>
                 <FormLabel htmlFor="subjectLine">Subject Line:</FormLabel>
@@ -150,17 +130,12 @@ const EmailForm = () => {
                   <Input
                     type="text"
                     id="subjectLine"
-                    {...register("subjectLine")}
+                    {...methods.register("subjectLine")}
                     required
                     placeholder="Example: Product Review, etc..."
-                    className={`rounded-md  ${
-                      errors.subjectLine ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className="rounded-2xl"
                   />
                 </FormControl>
-                {errors.subjectLine && (
-                  <FormMessage>{errors.subjectLine?.message}</FormMessage>
-                )}
               </FormItem>
               <FormItem>
                 <FormLabel htmlFor="recipients">
@@ -170,17 +145,12 @@ const EmailForm = () => {
                   <Input
                     type="text"
                     id="recipients"
-                    {...register("recipients")}
+                    {...methods.register("recipients")}
                     required
                     placeholder="Example: hr.department@gmail.com"
-                    className={`rounded-md  ${
-                      errors.recipients ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className="rounded-2xl"
                   />
                 </FormControl>
-                {errors.recipients && (
-                  <FormMessage>{errors.recipients?.message}</FormMessage>
-                )}
               </FormItem>
               <FormItem>
                 <FormLabel htmlFor="senders">
@@ -190,17 +160,12 @@ const EmailForm = () => {
                   <Input
                     type="text"
                     id="senders"
-                    {...register("senders")}
+                    {...methods.register("senders")}
                     required
                     placeholder="Example: manager.department@gmail.com"
-                    className={`rounded-md  ${
-                      errors.senders ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className="rounded-2xl"
                   />
                 </FormControl>
-                {errors.senders && (
-                  <FormMessage>{errors.senders?.message}</FormMessage>
-                )}
               </FormItem>
               <FormItem>
                 <FormLabel htmlFor="maxLength">Max Length (words):</FormLabel>
@@ -213,7 +178,7 @@ const EmailForm = () => {
                     min="50"
                     max="500"
                     step="10"
-                    {...register("maxLength", { valueAsNumber: true })}
+                    {...methods.register("maxLength", { valueAsNumber: true })}
                   />
                 </FormControl>
               </FormItem>
@@ -243,53 +208,32 @@ const EmailForm = () => {
                   </Select>
                 </FormControl>
               </FormItem>
-              <Button type="submit" disabled={loading} className="relative">
-                  {loading ? (
-                     <>
-                         Generating...
-                         <Loader2 className="absolute right-2 top-1/2 transform -translate-y-1/2 animate-spin h-4 w-4" />
-                     </>
-                 ) : (
-                     "Generate Email"
-                 )}
-                </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Generating..." : "Generate Email"}
+              </Button>
               {error && <FormMessage>{error}</FormMessage>}
             </form>
           </FormProvider>
         </div>
       </div>
-       <div className="bg-slate-200 h-full w-1"></div>
-       <div className="p-2" style={{ width: "60%" }}>
-       <div
-         style={{
-           width: "100%",
-           backgroundColor: generatedEmail ? "white" : "white",
-         }}
-         className={`p-3 rounded-md ${generatedEmail ? "shadow-sm" : ""}`}
-       >
-         {generatedEmail ? (
-<div className="email-output bg-slate-100 p-3 rounded-2xl">
-<pre
-className="text-slate-700"
-style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
->
-{generatedEmail}
-</pre>
-<div className="mt-5">
-<Button onClick={copyToClipboard}>Copy</Button>
-</div>
-</div>
-
-): (
-      <div 
-        className="h-full flex items-center justify-center" 
-        style={{ backgroundColor: 'white' }} // Added for explicit white background
-      >
-        {/* Empty space with white background */}
-      </div>)}
-    </div>
-  </div>
-</div>
+      <div className="p-5" style={{ width: "60%" }}>
+        <div style={{ width: "100%" }}>
+          {generatedEmail && (
+            <div className="email-output">
+              <pre
+                className="text-slate-700"
+                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              >
+                {generatedEmail}
+              </pre>
+              <div className="mt-5">
+                <Button onClick={copyToClipboard}>Copy</Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 
