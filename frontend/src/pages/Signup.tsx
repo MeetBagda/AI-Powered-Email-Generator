@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -42,18 +42,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [apiUrl, setApiUrl] = useState("");
 
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-            const hostname = window.location.hostname;
-             if (hostname === "localhost") {
-               setApiUrl(import.meta.env.VITE_API_URL_LOCAL)
-             } else {
-               setApiUrl(import.meta.env.VITE_API_URL_PRODUCTION)
-            }
-         }
-      }, []);
   // Create form
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
@@ -69,7 +58,7 @@ export default function SignUp() {
         console.log("Attempting signup with:", data);
         try {
             const response = await axios.post(
-                `${apiUrl}/user/signup`,
+                "https://ai-powered-email-generator.onrender.com/api/v1/user/signup",
                 data,
                {
                   headers: {

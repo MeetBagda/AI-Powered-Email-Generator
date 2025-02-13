@@ -6,74 +6,50 @@ const {Email} = require("../db");
 const axios = require("axios");
 const { authMiddleware } = require("../middleware");
 
-router.post("/generate-email", authMiddleware, async (req, res) => {
-  const createPayLoad = req.body;
-  const parsedPayLoad = generateEmailSchema.safeParse(createPayLoad);
-
-  if (!parsedPayLoad.success) {
-    return res.status(411).json({
-      msg: "You sent the wrong inputs",
-      errors: parsedPayLoad.error.issues,
-    });
-  }
-
-  try {
-    let pythonServiceUrl;
-
-    if (typeof window !== "undefined") {
-      // This block will never execute on the backend since `window` is undefined.
-     // We are adding this block to make it similar to your code.
-      const hostname = window.location.hostname;
-
-      if (hostname === "localhost") {
-        pythonServiceUrl = process.env.PYTHON_SERVICE_URL_LOCAL;
-      } else {
-        pythonServiceUrl = process.env.PYTHON_SERVICE_URL_PRODUCTION;
-      }
-      
-    } else {
-       // This part is for the Node.js backend.
-      if (process.env.NODE_ENV === "production") {
-        pythonServiceUrl = process.env.PYTHON_SERVICE_URL_PRODUCTION;
-      } else {
-         pythonServiceUrl = process.env.PYTHON_SERVICE_URL_LOCAL;
-      }
+router.post("/generate-email",authMiddleware, async (req, res) => {
+    const createPayLoad = req.body;
+    const parsedPayLoad = generateEmailSchema.safeParse(createPayLoad);
+  
+    if (!parsedPayLoad.success) {
+      return res.status(411).json({
+        msg: "You sent the wrong inputs",
+        errors: parsedPayLoad.error.issues,
+      });
     }
-
-
-    const pythonResponse = await axios.post(
-      pythonServiceUrl + "/generate-email",
-      createPayLoad
-    );
-
-    const generatedEmail = pythonResponse.data.email;
-
-    await Email.create({
-      purpose: createPayLoad.purpose,
-      subjectLine: createPayLoad.subjectLine,
-      recipients: createPayLoad.recipients,
-      senders: createPayLoad.senders,
-      maxLength: createPayLoad.maxLength,
-      tone: createPayLoad.tone || "professional",
-      generatedEmail: generatedEmail || "",
-      createdAt: new Date(),
-      userId: req.userId,
-    });
-
-    console.log(createPayLoad);
-
-    res.json({
-      msg: "Email created",
-      email: generatedEmail,
-    });
-  } catch (error) {
-    console.error("Error during email generation:", error);
-    res.status(500).json({
-      msg: "Error generating or saving email",
-      error: error.message,
-    });
-  }
-});
+  
+    try {
+      const pythonResponse = await axios.post(
+        "https://ai-powered-email-generator-1.onrender.com/generate-email",
+        createPayLoad
+      );
+  
+      const generatedEmail = pythonResponse.data.email;
+  
+      await Email.create({
+        purpose: createPayLoad.purpose,
+        subjectLine: createPayLoad.subjectLine,
+        recipients: createPayLoad.recipients,
+        senders: createPayLoad.senders,
+        maxLength: createPayLoad.maxLength,
+        tone: createPayLoad.tone || "professional",
+        generatedEmail: generatedEmail || "",
+        createdAt: new Date(),
+        userId: req.userId, // Add userId from authenticated user
+      });
+  
+      console.log(createPayLoad);
+  
+      res.json({
+        msg: "Email created",
+        email: generatedEmail,
+      });
+    } catch (error) {
+      console.error("Error during email generation:", error);
+      res
+        .status(500)
+        .json({ msg: "Error generating or saving email", error: error.message });
+    }
+  });
   
   router.get("/emails", async (req, res) => {
     try {
