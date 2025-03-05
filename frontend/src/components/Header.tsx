@@ -11,6 +11,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useEmailContext } from '@/context/EmailContext';
 
 interface Email {
     _id: string;
@@ -32,8 +33,8 @@ function Header() {
     const [favoriteEmails, setFavoriteEmails] = useState<Email[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [emailCount, setEmailCount] = useState(0);
-     const navigate = useNavigate();
+    const { emailCount } = useEmailContext();
+    const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
@@ -46,7 +47,8 @@ function Header() {
         setError(null);
 
         try {
-            const response = await fetch(`https://ai-powered-email-generator.onrender.com/api/v1/email/emails/user/${userId}`, {
+            // const response = await fetch(`https://ai-powered-email-generator.onrender.com/api/v1/email/emails/user/${userId}`, {
+            const response = await fetch(`http://localhost:8888/api/v1/email/emails/user/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -119,16 +121,6 @@ function Header() {
         localStorage.removeItem("userId");
         navigate("/signin");
     };
-
-    const handleEmailGenerated = () => {
-        setEmailCount((prevCount) => prevCount + 1);
-    };
-
-
-    useEffect(() => {
-        localStorage.setItem("handleEmailGenerated", JSON.stringify(handleEmailGenerated));
-    }, [handleEmailGenerated]);
-
 
     const copyToClipboard = async (emailText: string) => {
         if (!emailText) return;

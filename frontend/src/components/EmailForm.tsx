@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEmailContext } from "@/context/EmailContext";
+import { apiClient } from "@/utils/api";
 
 interface FormValues {
   purpose: string;
@@ -35,6 +37,8 @@ const EmailForm = () => {
     },
   });
 
+  const { incrementEmailCount } = useEmailContext();
+
   const {
     handleSubmit,
     watch,
@@ -50,32 +54,22 @@ const EmailForm = () => {
     setGeneratedEmail("");
 
     try {
-      const response = await fetch("https://ai-powered-email-generator.onrender.com/api/v1/email/generate-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          purpose: data.purpose,
-          subjectLine: data.subjectLine,
-          recipients: data.recipients,
-          senders: data.senders,
-          maxLength: data.maxLength,
-          tone: data.tone,
-        }),
+      // Note: Using the actual endpoint as seen in the original code
+      const response = await apiClient.post("/email/generate-email", {
+        purpose: data.purpose,
+        subjectLine: data.subjectLine,
+        recipients: data.recipients,
+        senders: data.senders,
+        maxLength: data.maxLength,
+        tone: data.tone,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || "Failed to generate email.");
-      } else {
-        const responseData = await response.json();
-        setGeneratedEmail(responseData.email);
-      }
-    } catch (error) {
+      setGeneratedEmail(response.data.email);
+      // Call incrementEmailCount to update the email count
+      incrementEmailCount();
+    } catch (error: any) {
       console.error("Error:", error);
-      setError("Failed to generate email. Please try again.");
+      setError(error.response?.data?.error || "Failed to generate email. Please try again.");
     } finally {
       setLoading(false);
     }

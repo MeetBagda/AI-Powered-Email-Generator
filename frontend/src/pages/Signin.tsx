@@ -23,7 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { apiClient, endpoints } from "@/utils/api";
 
 // Define the schema for sign-in
 const signInSchema = z.object({
@@ -53,25 +53,17 @@ export default function SignIn() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(
-        "https://ai-powered-email-generator.onrender.com/api/v1/user/signin",
-        data,
-          {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await apiClient.post(endpoints.auth.signIn, data);
 
-        if(response.status === 200){
-            // Store token and userId on success
-          localStorage.setItem("token", response.data.token);
-           localStorage.setItem("userId", response.data.userId);
+      if(response.status === 200){
+        // Store token and userId on success
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.userId);
         reset();
         navigate("/email");
-         } else{
-           setError("An error occurred. Please try again.")
-         }
+      } else{
+        setError("An error occurred. Please try again.")
+      }
     } catch (err: any) {
       console.error(err);
       setError(

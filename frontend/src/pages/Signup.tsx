@@ -23,7 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { apiClient, endpoints } from "@/utils/api";
 
 // Define the schema for sign-up
 const signUpSchema = z.object({
@@ -57,16 +57,7 @@ export default function SignUp() {
         setError(null);
         console.log("Attempting signup with:", data);
         try {
-            const response = await axios.post(
-                "https://ai-powered-email-generator.onrender.com/api/v1/user/signup",
-                data,
-               {
-                  headers: {
-                     "Content-Type": "application/json",
-                   }
-                 }
-            );
-
+            const response = await apiClient.post(endpoints.auth.signUp, data);
 
             console.log("Response Status:", response.status);
             console.log("Response Data:", response.data);

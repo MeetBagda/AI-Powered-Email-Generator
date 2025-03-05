@@ -5,8 +5,9 @@ const { generateEmailSchema, userSchema, getAllUserSchema } = require("../types"
 const {Email} = require("../db");
 const axios = require("axios");
 const { authMiddleware } = require("../middleware");
+const { PYTHON_SERVICE_URL } = require("../config");
 
-router.post("/generate-email",authMiddleware, async (req, res) => {
+router.post("/generate-email", authMiddleware, async (req, res) => {
     const createPayLoad = req.body;
     const parsedPayLoad = generateEmailSchema.safeParse(createPayLoad);
   
@@ -18,8 +19,9 @@ router.post("/generate-email",authMiddleware, async (req, res) => {
     }
   
     try {
+      // Use the URL from config
       const pythonResponse = await axios.post(
-        "https://ai-powered-email-generator-1.onrender.com/generate-email",
+        `${PYTHON_SERVICE_URL}/generate-email`,
         createPayLoad
       );
   

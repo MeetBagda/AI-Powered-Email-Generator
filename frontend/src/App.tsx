@@ -11,33 +11,36 @@ import {
 } from "react-router-dom";
 import SignIn from "./pages/Signin";
 import SignUp from "./pages/Signup";
-import { Children, useEffect } from "react";
-import axios from "axios";
+import { useEffect } from "react";
+import { EmailProvider } from "./context/EmailContext";
+import { apiClient } from "./utils/api";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/email"
-          element={
-            <ProtectedRoute>
-            <Layout>
-              <div className="flex flex-col w-full h-auto gap-2">
-                <Header />
-                <div className="flex flex-row">
-                  <EmailForm />
-                </div>
-              </div>
-            </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/signin" element={<AuthRoute> <SignIn /> </AuthRoute>} />
-        <Route path="/signup" element={<AuthRoute><SignUp /></AuthRoute>} />
-      </Routes>
-    </Router>
+    <EmailProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/email"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <div className="flex flex-col w-full h-auto gap-2">
+                    <Header />
+                    <div className="flex flex-row">
+                      <EmailForm />
+                    </div>
+                  </div>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/signin" element={<AuthRoute> <SignIn /> </AuthRoute>} />
+          <Route path="/signup" element={<AuthRoute><SignUp /></AuthRoute>} />
+        </Routes>
+      </Router>
+    </EmailProvider>
   );
 }
 
@@ -50,11 +53,9 @@ const AuthRoute = ({ children }: any) => {
         if (!token) {
           return;
         }
-        await axios.get("https://ai-powered-email-generator.onrender.com/api/v1/user/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        
+        // Use apiClient instead of direct axios call
+        await apiClient.get("/user/me");
         navigate("/email");
       } catch (err) {
         console.error("Error checking auth:", err);
@@ -75,12 +76,11 @@ const ProtectedRoute = ({ children }: any) => {
       try {
         if (!token) {
           navigate("/signin");
+          return;
         }
-        await axios.get("https://ai-powered-email-generator.onrender.com/api/v1/user/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        
+        // Use apiClient instead of direct axios call
+        await apiClient.get("/user/me");
       } catch (e) {
         navigate("/signin");
       }
